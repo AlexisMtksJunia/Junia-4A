@@ -1,20 +1,20 @@
-# Utilisez l'image de base PHP avec Nginx
-FROM php:8.1-fpm
+# Utiliser l'image de base Nginx
+FROM nginx:latest
 
-# Installez Nginx
-RUN apt-get update && apt-get install -y nginx
+# Installer PHP-FPM
+RUN apt-get update && apt-get install -y php-fpm
 
 # Copier le fichier de configuration Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copier les fichiers de l'application dans le répertoire web
+# Copier les fichiers de votre application dans le répertoire web
 COPY . /var/www/html
 
-# Changer les permissions pour permettre à Nginx d'accéder aux fichiers
+# Assurez-vous que les permissions sont correctement définies
 RUN chown -R www-data:www-data /var/www/html
 
-# Exposer le port 80 pour le serveur web
+# Exposer le port 80
 EXPOSE 80
 
-# Script de démarrage pour lancer PHP-FPM et Nginx
-CMD service nginx start && php-fpm
+# Script de démarrage
+CMD service php7.4-fpm start && nginx -g "daemon off;"
