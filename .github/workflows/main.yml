@@ -39,6 +39,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}  # Assurez-vous d'ajouter ce secret dans votre repository GitHub
           password: ${{ secrets.DOCKER_PASSWORD }}  # Assurez-vous d'ajouter ce secret dans votre repository GitHub
 
+      - name: Verify Dockerfile exists
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Dockerfile not found!"
+            exit 1
+          fi
+
       - name: Build Docker image
         run: |
           docker build -t my-docker-image:latest .
