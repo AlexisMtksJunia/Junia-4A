@@ -1,6 +1,6 @@
 name: main PHP Files
 
-# Leeeee workflow s'exécute lorsqu'un push est effectué sur la branche "develop"
+# Le workflow s'exécute lorsqu'un push est effectué sur la branche "develop"
 on:
   push:
     branches:
@@ -11,15 +11,12 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # Etape 1 : Checker le code du dépôt, re clonner le repository
+      # Etape 1 : Checker le code du dépôt, re-clonner le repository
       - name: Check du repository
         uses: actions/checkout@v3
 
       # Etape 2 : Trouver les fichiers PHP et executer "php -l" sur eux
       - name: Execution sur les fichiers PHP
-        # find .  : cherche dans le dossier courant
-        # -exec : execute une commande sur chaque fichier trouvé, "\;" fin de exec
-        # {} : placeholder qui se rempli par le nom de chaque fichier trouvé
         run: find . -iname "*.php" -exec php -l {} \;
 
   build:
@@ -50,6 +47,15 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t my-docker-image:latest .
+          docker images  # Vérifier les images disponibles après la construction
+
+      - name: Vérifier si l'image Docker est créée
+        run: |
+          if ! docker images my-docker-image:latest --format '{{.Repository}}:{{.Tag}}'; then
+            echo "Image 'my-docker-image:latest' not found. Ensure that the build step completed successfully."
+            exit 1
+          fi
+        shell: bash
 
   push:
     runs-on: ubuntu-latest
@@ -65,7 +71,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push Docker image
+      - name: Tag and Push Docker image
         run: |
           docker tag my-docker-image:latest your-dockerhub-username/my-docker-image:latest
           docker push your-dockerhub-username/my-docker-image:latest
