@@ -11,18 +11,18 @@ jobs:
     runs-on: self-hosted
 
     steps:
-        # Etape 1 : Checker le code du dépôt, re clonner le repository
-        - name: Check du repository
-          uses: actions/checkout@v3
+      # Etape 1 : Checker le code du dépôt, re clonner le repository
+      - name: Check du repository
+        uses: actions/checkout@v3
 
-        # Etape 2 : Trouver les fichiers PHP et executer "php -l" sur eux
-        - name : Execution sur les fichiers PHP
+      # Etape 2 : Trouver les fichiers PHP et executer "php -l" sur eux
+      - name: Execution sur les fichiers PHP
         # find .  : cherche dans le dossier courant
         # -exec : execute une commande sur chaque fichier trouvé, "\;" fin de exec
         # {} : placeholder qui se rempli par le nom de chaque fichier trouvé
-          run: find . -iname "*.php" -exec php -l {} \;
+        run: find . -iname "*.php" -exec php -l {} \;
 
-build:
+  build:
     runs-on: ubuntu-latest
     needs: lint  # S'assure que le job 'lint' a été exécuté avec succès avant de lancer 'build'
 
