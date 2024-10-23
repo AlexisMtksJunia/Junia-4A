@@ -1,11 +1,20 @@
-# Utiliser une image de base PHP avec Apache
-FROM php:8.1-apache
+# Utilisez l'image de base PHP avec Nginx
+FROM php:8.1-fpm
 
-# Copier tous les fichiers de votre application dans le dossier web d'Apache
-COPY . /var/www/html/
+# Installez Nginx
+RUN apt-get update && apt-get install -y nginx
 
-# Installer les dépendances PHP supplémentaires si nécessaire
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+# Copier le fichier de configuration Nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Exposer le port 80 pour accéder au serveur web
+# Copier les fichiers de l'application dans le répertoire web
+COPY . /var/www/html
+
+# Changer les permissions pour permettre à Nginx d'accéder aux fichiers
+RUN chown -R www-data:www-data /var/www/html
+
+# Exposer le port 80 pour le serveur web
 EXPOSE 80
+
+# Script de démarrage pour lancer PHP-FPM et Nginx
+CMD service nginx start && php-fpm
