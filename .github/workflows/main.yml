@@ -47,8 +47,17 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t my-docker-image:latest .
-          docker images  # Vérifier la liste des images après la construction
+        docker build -t my-docker-image:latest .
+        docker images  # Vérifier la liste des images disponibles après la construction
+      
+      - name: Vérifier si l'image Docker est créée
+        run: |
+          if ! docker images my-docker-image:latest --format '{{.Repository}}:{{.Tag}}'; then
+            echo "Image 'my-docker-image:latest' not found. Ensure that the build step completed successfully."
+            exit 1
+          fi
+
+    
 
   push:
     runs-on: ubuntu-latest
